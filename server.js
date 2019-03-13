@@ -9,6 +9,8 @@ const { PORT, CLIENT_ORIGIN, MONGODB_URI } = require('./config');
 const passport = require('passport');
 const { localStrategy, jwtStrategy } = require('./passport/strategies');
 // routes
+const authRouter = require('./routes/auth');
+const userRouter = require('./routes/users');
 
 const app = express();
 
@@ -36,7 +38,8 @@ passport.use(localStrategy);
 passport.use(jwtStrategy);
 
 // Mount Routers
-
+app.use('/api/auth', authRouter);
+app.use('/api/users', userRouter);
 
 // error handler
 app.use((err, req, res, next) => {
