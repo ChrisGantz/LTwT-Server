@@ -3,11 +3,9 @@
 const { Strategy: LocalStrategy } = require('passport-local');
 
 const { Strategy: JwtStrategy, ExtractJwt } = require('passport-jwt');
-
 // require user model
-const {User} = require('');
+const {User} = require('../models/user');
 const { JWT_SECRET } = require('../config');
-
 const localStrategy = new LocalStrategy((username, password, callback) => {
   let user;
   User.findOne({ username: username })

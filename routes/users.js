@@ -12,7 +12,7 @@ const jsonParser = bodyParser.json();
 router.post('/', jsonParser, (req, res) => {
   const requiredFields = ['username', 'password'];
   const missingField = requiredFields.find(field => !(field in req.body));
-  let { username, password, email = '' } = req.body;
+  let { username, password } = req.body;
 
   if (missingField) {
     return res.status(422).json({
@@ -23,7 +23,7 @@ router.post('/', jsonParser, (req, res) => {
     });
   }
 
-  const stringFields = ['username', 'password', 'email'];
+  const stringFields = ['username', 'password'];
   const nonStringField = stringFields.find(
     field => field in req.body && typeof req.body[field] !== 'string'
   );
@@ -91,11 +91,6 @@ router.post('/', jsonParser, (req, res) => {
     });
   }
 
-  // Username and password come in pre-trimmed, otherwise we throw an error
-  // before this
-  email = email.trim();
-  // add verification for email
-
   return User.find({ username })
     .count()
     .then(count => {
@@ -115,7 +110,6 @@ router.post('/', jsonParser, (req, res) => {
       return User.create({
         username,
         password: hash,
-        email
       });
     })
     .then(user => {
@@ -130,17 +124,5 @@ router.post('/', jsonParser, (req, res) => {
       res.status(500).json({ code: 500, message: 'Internal server error' });
     });
 });
-
-// router.put('/', (req, res, next) =>)
-
-// Never expose all your users like below in a prod application
-// we're just doing this so we have a quick way to see
-// if we're creating users. keep in mind, you can also
-// verify this in the Mongo shell.
-// router.get("/", (req, res) => {
-//   return User.find()
-//     .then(users => res.json(users.map(user => user.serialize())))
-//     .catch(err => res.status(500).json({ message: "Internal server error" }));
-// });
 
 module.exports = router;
